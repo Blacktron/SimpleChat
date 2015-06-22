@@ -1,7 +1,7 @@
 package bg.sap.client;
 
 import bg.sap.utils.Constants;
-import bg.sap.utils.FileChannelWrapper;
+import bg.sap.utils.FileChannelHelper;
 import bg.sap.utils.OperationHandler;
 import bg.sap.utils.User;
 
@@ -24,7 +24,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener {
     // File sending fields.
     private boolean connectedToServer;
     private boolean downloadRequest;
-    private FileChannelWrapper fileChannelWrapper;
+    private FileChannelHelper fileChannelHelper;
     private SelectionKey transferKey;
     private String fileName;
 
@@ -297,7 +297,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener {
                     else if (key.isReadable()) {
                         // Download file.
                         if (key == transferKey) {
-                            OperationHandler.getFile(key, fileChannelWrapper);
+                            OperationHandler.getFile(key, fileChannelHelper);
                         }
                         else {
                             // Read data.
@@ -313,7 +313,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener {
 
                                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                                 FileChannel fileChannel = fileOutputStream.getChannel();
-                                fileChannelWrapper = new FileChannelWrapper(Long.parseLong(fileData[2]), fileChannel);
+                                fileChannelHelper = new FileChannelHelper(Long.parseLong(fileData[2]), fileChannel);
 
                                 transferKey = key;
                             }

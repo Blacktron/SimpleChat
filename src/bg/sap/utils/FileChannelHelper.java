@@ -5,12 +5,12 @@ import java.nio.channels.FileChannel;
 /**
  * @Created by Terrax on 17.05.2015.
  */
-public class FileChannelWrapper {
+public class FileChannelHelper {
     private long size;
     private long position;
     private FileChannel fileChannel;
 
-    public FileChannelWrapper(long size, FileChannel fileChannel) {
+    public FileChannelHelper(long size, FileChannel fileChannel) {
         this.size = size;
         this.position = 0;
         this.fileChannel = fileChannel;

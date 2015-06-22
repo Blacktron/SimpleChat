@@ -1,7 +1,7 @@
 package bg.sap.server;
 
 import bg.sap.utils.Constants;
-import bg.sap.utils.FileChannelWrapper;
+import bg.sap.utils.FileChannelHelper;
 import bg.sap.utils.OperationHandler;
 import bg.sap.utils.User;
 
@@ -25,7 +25,7 @@ public class ChatServer implements Runnable {
     private Map<SocketChannel, User> connectedChannels;
 
     // Container which maps a user to its file channel.
-    private Map<SelectionKey, FileChannelWrapper> fileChannels;
+    private Map<SelectionKey, FileChannelHelper> fileChannels;
 
     // Container for user accounts.
     private Map<String, String> userAccounts;
@@ -33,7 +33,7 @@ public class ChatServer implements Runnable {
     public ChatServer(int port) {
         connectedUsers = new ConcurrentHashMap<User, SocketChannel>();
         connectedChannels = new ConcurrentHashMap<SocketChannel, User>();
-        fileChannels = new ConcurrentHashMap<SelectionKey, FileChannelWrapper>();
+        fileChannels = new ConcurrentHashMap<SelectionKey, FileChannelHelper>();
         userAccounts = new ConcurrentHashMap<String, String>();
 
         try {
@@ -126,11 +126,11 @@ public class ChatServer implements Runnable {
 
         // Download a file.
         if (fileChannels.containsKey(key)) {
-            FileChannelWrapper fileChannelWrapper = fileChannels.get(key);
+            FileChannelHelper fileChannelHelper = fileChannels.get(key);
 
-            OperationHandler.getFile(key, fileChannelWrapper);
+            OperationHandler.getFile(key, fileChannelHelper);
 
-            if (!fileChannelWrapper.getFileChannel().isOpen()) {
+            if (!fileChannelHelper.getFileChannel().isOpen()) {
                 fileChannels.remove(key);
             }
         }
@@ -170,7 +170,7 @@ public class ChatServer implements Runnable {
                 FileChannel fileChannel = fileOutputStream.getChannel();
 
                 System.out.println("Receiving file");
-                fileChannels.put(key, new FileChannelWrapper(Integer.parseInt(details[2]), fileChannel));
+                fileChannels.put(key, new FileChannelHelper(Integer.parseInt(details[2]), fileChannel));
             }
             // Check if a user wants to download a file.
             else if (data.contains(Constants.FILE_DOWNLOAD)) {

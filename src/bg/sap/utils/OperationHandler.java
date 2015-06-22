@@ -79,18 +79,18 @@ public class OperationHandler {
     /**
      * Download a file from a socket channel.
      * @param key the key with the data.
-     * @param fileChannelWrapper the file channel with the file's size.
+     * @param fileChannelHelper the file channel with the file's size.
      * @throws IOException
      */
-    public static void getFile(SelectionKey key, FileChannelWrapper fileChannelWrapper) throws IOException {
-        FileChannel fileChannel = fileChannelWrapper.getFileChannel();
+    public static void getFile(SelectionKey key, FileChannelHelper fileChannelHelper) throws IOException {
+        FileChannel fileChannel = fileChannelHelper.getFileChannel();
         SocketChannel socketChannel = (SocketChannel) key.channel();
 
-        long readBytes = fileChannel.transferFrom(socketChannel, fileChannelWrapper.getPosition(), Constants.FILE_FRAGMENT_SIZE);
-        fileChannelWrapper.incrementPosition(readBytes);
+        long readBytes = fileChannel.transferFrom(socketChannel, fileChannelHelper.getPosition(), Constants.FILE_FRAGMENT_SIZE);
+        fileChannelHelper.incrementPosition(readBytes);
 
         // Close the file channel if all data has been sent.
-        if (fileChannelWrapper.getPosition() >= fileChannelWrapper.getSize()) {
+        if (fileChannelHelper.getPosition() >= fileChannelHelper.getSize()) {
             fileChannel.force(false);
             key.cancel();
 
